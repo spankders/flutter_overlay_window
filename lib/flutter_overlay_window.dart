@@ -39,9 +39,9 @@ class FlutterOverlayWindow {
     }
   }
 
-  static Future<bool> requestPermession() async {
+  static Future<bool?> requestPermession() async {
     try {
-      return await _channel.invokeMethod('requestPermission');
+      return await _channel.invokeMethod<bool?>('requestPermission');
     } on PlatformException catch (error) {
       log("Error requestPermession: $error");
       rethrow;

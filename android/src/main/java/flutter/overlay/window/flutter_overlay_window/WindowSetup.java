@@ -5,11 +5,13 @@ import android.view.WindowManager;
 
 import io.flutter.plugin.common.BasicMessageChannel;
 
-public final class WindowSetup {
-    static int height = -1;
+public abstract class WindowSetup {
+
+    static int height = WindowManager.LayoutParams.MATCH_PARENT;
     static int width = WindowManager.LayoutParams.MATCH_PARENT;
     static int gravity = Gravity.CENTER;
     static BasicMessageChannel messenger = null;
+
 
     static void setGravityFromAlignment(String alignment) {
         if (alignment.toLowerCase() == "topLeft".toLowerCase()) {

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -29,13 +30,12 @@ import io.flutter.plugin.common.PluginRegistry;
 
 public class FlutterOverlayWindowPlugin implements FlutterPlugin, ActivityAware, BasicMessageChannel.MessageHandler, MethodCallHandler, PluginRegistry.ActivityResultListener {
 
-
     private MethodChannel channel;
     private Context context;
     private Activity mActivity;
     private BasicMessageChannel messenger;
     private Result pendingResult;
-    final int REQUEST_CODE_FOR_OVERLAY_PERMISSION = 19999;
+    final int REQUEST_CODE_FOR_OVERLAY_PERMISSION = 2087;
 
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
@@ -45,6 +45,9 @@ public class FlutterOverlayWindowPlugin implements FlutterPlugin, ActivityAware,
 
         messenger = new BasicMessageChannel(flutterPluginBinding.getBinaryMessenger(), OverlayConstants.MESSENGER_TAG, JSONMessageCodec.INSTANCE);
         messenger.setMessageHandler(this);
+
+        WindowSetup.messenger = messenger;
+        WindowSetup.messenger.setMessageHandler(this);
     }
 
     @Override
@@ -66,7 +69,7 @@ public class FlutterOverlayWindowPlugin implements FlutterPlugin, ActivityAware,
             String alignment = call.argument("alignment").toString();
 
             WindowSetup.width = width != null ? width : -1;
-            WindowSetup.height = height != null ? width : -1;
+            WindowSetup.height = height != null ? height : -1;
             WindowSetup.setGravityFromAlignment(alignment != null ? alignment : "center");
             mActivity.startService(new Intent(context, OverlayService.class));
             result.success(null);
@@ -82,8 +85,6 @@ public class FlutterOverlayWindowPlugin implements FlutterPlugin, ActivityAware,
 
     @Override
     public void onAttachedToActivity(@NonNull ActivityPluginBinding binding) {
-        WindowSetup.messenger = messenger;
-        WindowSetup.messenger.setMessageHandler(this);
         mActivity = binding.getActivity();
         FlutterEngineGroup enn = new FlutterEngineGroup(context);
         DartExecutor.DartEntrypoint dEntry = new DartExecutor.DartEntrypoint(
@@ -107,6 +108,7 @@ public class FlutterOverlayWindowPlugin implements FlutterPlugin, ActivityAware,
 
     @Override
     public void onMessage(@Nullable Object message, @NonNull BasicMessageChannel.Reply reply) {
+        Log.d("MSG", "onMessage: " + message);
         BasicMessageChannel overlayMessageChannel = new BasicMessageChannel(FlutterEngineCache.getInstance().get("my_engine_id")
                 .getDartExecutor(), OverlayConstants.MESSENGER_TAG, JSONMessageCodec.INSTANCE);
         overlayMessageChannel.send(message, reply);

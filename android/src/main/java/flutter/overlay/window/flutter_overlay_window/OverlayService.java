@@ -41,15 +41,16 @@ public class OverlayService extends Service {
         flutterView.setFitsSystemWindows(true);
         flutterView.setBackgroundColor(Color.TRANSPARENT);
         flutterChannel.setMethodCallHandler((call, result) -> {
-            Log.d("X-S-S-S", "onCreate: Called" + call.method);
-            if (call.method == "close") {
+            Log.d("X-S-S-S", "onCreate: Called " + call.method);
+            Log.d("WINDOW", "onCreate: " + WindowSetup.height);
+            if (call.method.equals("close")) {
                 boolean closed = stopService(new Intent(getBaseContext(), OverlayService.class));
+                Log.d("CALL", "CALL: " + closed);
                 result.success(closed);
             }
         });
 
         overlayMessageChannel.setMessageHandler((message, reply) -> {
-            Log.d("MESSENGER", "send message: " + message);
             WindowSetup.messenger.send(message);
         });
 
