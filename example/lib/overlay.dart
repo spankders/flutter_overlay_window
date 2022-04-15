@@ -14,7 +14,7 @@ class _OverlayWindowState extends State<OverlayWindow> {
   @override
   void initState() {
     super.initState();
-    FlutterOverlayWindow.overlayListener().listen((event) {
+    FlutterOverlayWindow.overlayListener.listen((event) {
       log("Current Event: $event");
     });
   }
@@ -42,8 +42,7 @@ class _OverlayWindowState extends State<OverlayWindow> {
                 ),
                 ElevatedButton(
                   onPressed: () async {
-                    await FlutterOverlayWindow.sendDataToAndFromOverlay(
-                        "It's what it is");
+                    await FlutterOverlayWindow.shareData("It's what it is");
                   },
                   child: const Text("Send data"),
                 )

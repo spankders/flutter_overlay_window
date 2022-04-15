@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 class FlutterOverlayWindow {
   FlutterOverlayWindow._();
 
+  static final StreamController _controller = StreamController();
   static const MethodChannel _channel =
       MethodChannel("x-slayer/overlay_channel");
   static const MethodChannel _overlayChannel =
@@ -14,10 +15,6 @@ class FlutterOverlayWindow {
       BasicMessageChannel("x-slayer/overlay_messenger", JSONMessageCodec());
 
   /// Open overLay content
-  /// Takes optional;
-  ///   - int [height] default is [overlaySizeFill]
-  ///   - int [width] default is [overlaySizeFill]
-  ///   - OverlayAlignment [width] default is [alignment] [OverlayAlignment.center]
   static Future<void> showOverlay({
     int height = -1,
     int width = -1,
@@ -30,6 +27,7 @@ class FlutterOverlayWindow {
     });
   }
 
+  /// check if overlay permission is granted
   static Future<bool> isPermissionGranted() async {
     try {
       return await _channel.invokeMethod<bool>('checkPermission') ?? false;
@@ -39,6 +37,7 @@ class FlutterOverlayWindow {
     }
   }
 
+  /// request the overlay permission
   static Future<bool?> requestPermession() async {
     try {
       return await _channel.invokeMethod<bool?>('requestPermission');
@@ -55,17 +54,12 @@ class FlutterOverlayWindow {
   }
 
   /// broadcast data to and from overlay app
-  /// the supported data type are;
-  ///   - [int], [double], [bool], [String], null
-  ///   - [List] of supported types
-  ///   - [Map] of supported types
-  static Future sendDataToAndFromOverlay(dynamic data) async {
+  static Future shareData(dynamic data) async {
     return await _overlayMessageChannel.send(data);
   }
 
   /// Streams message shared between overlay and main app
-  static final StreamController _controller = StreamController();
-  static Stream<dynamic> overlayListener() {
+  static Stream<dynamic> get overlayListener {
     _overlayMessageChannel.setMessageHandler((message) async {
       _controller.add(message);
       return message;
