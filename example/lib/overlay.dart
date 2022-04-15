@@ -32,9 +32,7 @@ class _OverlayWindowState extends State<OverlayWindow> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text(
-                  "Hello am an overlay",
-                ),
+                const Text("Hello am an overlay"),
                 const SizedBox(height: 20.0),
                 ElevatedButton(
                   onPressed: () async {
