@@ -5,7 +5,7 @@ import android.view.WindowManager;
 
 import io.flutter.plugin.common.BasicMessageChannel;
 
-public class WindowSetup {
+public final class WindowSetup {
     static int height = -1;
     static int width = WindowManager.LayoutParams.MATCH_PARENT;
     static int gravity = Gravity.CENTER;

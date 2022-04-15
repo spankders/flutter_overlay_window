@@ -29,24 +29,21 @@ import io.flutter.plugin.common.PluginRegistry;
 
 public class FlutterOverlayWindowPlugin implements FlutterPlugin, ActivityAware, BasicMessageChannel.MessageHandler, MethodCallHandler, PluginRegistry.ActivityResultListener {
 
-    private static final String CHANNEL_TAG = "x-slayer/overlay_channel";
-    static final String OVERLAY_TAG = "x-slayer/overlay";
-    private static final String MESSENGER_TAG = "x-slayer/overlay_messenger";
 
     private MethodChannel channel;
     private Context context;
     private Activity mActivity;
     private BasicMessageChannel messenger;
     private Result pendingResult;
-    final int REQUEST_CODE_FOR_OVERLAY_PERMISSION = 211;
+    final int REQUEST_CODE_FOR_OVERLAY_PERMISSION = 19999;
 
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
         this.context = flutterPluginBinding.getApplicationContext();
-        channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), CHANNEL_TAG);
+        channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), OverlayConstants.CHANNEL_TAG);
         channel.setMethodCallHandler(this);
 
-        messenger = new BasicMessageChannel(flutterPluginBinding.getBinaryMessenger(), MESSENGER_TAG, JSONMessageCodec.INSTANCE);
+        messenger = new BasicMessageChannel(flutterPluginBinding.getBinaryMessenger(), OverlayConstants.MESSENGER_TAG, JSONMessageCodec.INSTANCE);
         messenger.setMessageHandler(this);
     }
 
@@ -56,9 +53,8 @@ public class FlutterOverlayWindowPlugin implements FlutterPlugin, ActivityAware,
         if (call.method.equals("checkPermission")) {
             result.success(checkOverlayPermission());
         } else if (call.method.equals("requestPermission")) {
-            Intent intent = new Intent();
-            intent.setAction(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
-            intent.setData(Uri.parse("package:" + mActivity.getPackageName()));
+            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                    Uri.parse("package:" + mActivity.getPackageName()));
             mActivity.startActivityForResult(intent, REQUEST_CODE_FOR_OVERLAY_PERMISSION);
         } else if (call.method.equals("showOverlay")) {
             if (!checkOverlayPermission()) {
@@ -100,9 +96,11 @@ public class FlutterOverlayWindowPlugin implements FlutterPlugin, ActivityAware,
     @Override
     public void onDetachedFromActivityForConfigChanges() {
     }
+
     @Override
     public void onReattachedToActivityForConfigChanges(@NonNull ActivityPluginBinding binding) {
     }
+
     @Override
     public void onDetachedFromActivity() {
     }
@@ -110,7 +108,7 @@ public class FlutterOverlayWindowPlugin implements FlutterPlugin, ActivityAware,
     @Override
     public void onMessage(@Nullable Object message, @NonNull BasicMessageChannel.Reply reply) {
         BasicMessageChannel overlayMessageChannel = new BasicMessageChannel(FlutterEngineCache.getInstance().get("my_engine_id")
-                .getDartExecutor(), OVERLAY_TAG, JSONMessageCodec.INSTANCE);
+                .getDartExecutor(), OverlayConstants.MESSENGER_TAG, JSONMessageCodec.INSTANCE);
         overlayMessageChannel.send(message, reply);
     }
 
