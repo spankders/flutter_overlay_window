@@ -37,6 +37,10 @@ public class FlutterOverlayWindowPlugin implements FlutterPlugin, ActivityAware,
     private Result pendingResult;
     final int REQUEST_CODE_FOR_OVERLAY_PERMISSION = 2087;
 
+    public FlutterOverlayWindowPlugin() {
+    }
+
+
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
         this.context = flutterPluginBinding.getApplicationContext();
@@ -123,6 +127,7 @@ public class FlutterOverlayWindowPlugin implements FlutterPlugin, ActivityAware,
 
     @Override
     public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d("ACT", "onActivityResult: " + requestCode + resultCode);
         if (requestCode == REQUEST_CODE_FOR_OVERLAY_PERMISSION) {
             if (resultCode == Activity.RESULT_OK) {
                 pendingResult.success(true);

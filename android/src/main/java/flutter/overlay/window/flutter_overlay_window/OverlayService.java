@@ -4,6 +4,7 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
@@ -14,7 +15,10 @@ import android.util.Log;
 import android.view.WindowManager;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
+
+import com.example.flutter_overlay_window.R;
 
 import io.flutter.embedding.android.FlutterTextureView;
 import io.flutter.embedding.android.FlutterView;
@@ -37,10 +41,21 @@ public class OverlayService extends Service {
         return null;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
-    public void onCreate() {
-         /* createNotificationChannel();
-        displayNotification(); */
+    public void onDestroy() {
+        Log.d("OverLay", "Destroying the overlay window service");
+        NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        assert notificationManager != null;
+        notificationManager.cancel(OverlayConstants.NOTIFICATION_ID);
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        if (windowManager != null) {
+            closeOverlay();
+        }
+        Log.d("CMD", "Service started");
         FlutterEngine engine = FlutterEngineCache.getInstance().get("my_engine_id");
         engine.getLifecycleChannel().appIsResumed();
         flutterView = new FlutterView(getApplicationContext(), new FlutterTextureView(getApplicationContext()));
@@ -48,12 +63,8 @@ public class OverlayService extends Service {
         flutterView.setFitsSystemWindows(true);
         flutterView.setBackgroundColor(Color.TRANSPARENT);
         flutterChannel.setMethodCallHandler((call, result) -> {
-            Log.d("X-S-S-S", "onCreate: Called " + call.method);
             if (call.method.equals("close")) {
-                if (windowManager != null) {
-                    windowManager.removeView(flutterView);
-                    windowManager = null;
-                }
+                closeOverlay();
                 result.success(true);
             }
         });
@@ -64,7 +75,6 @@ public class OverlayService extends Service {
 
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 
-
         WindowManager.LayoutParams params = new WindowManager.LayoutParams(
                 WindowSetup.width,
                 WindowSetup.height,
@@ -74,14 +84,26 @@ public class OverlayService extends Service {
         );
         params.gravity = WindowSetup.gravity;
         windowManager.addView(flutterView, params);
+        return START_STICKY;
     }
 
-    private void displayNotification() {
+    private void closeOverlay() {
+        if (windowManager != null) {
+            windowManager.removeView(flutterView);
+            windowManager = null;
+            stopSelf();
+        }
+    }
+
+    @Override
+    public void onCreate() {
+        createNotificationChannel();
         Intent notificationIntent = new Intent(this, FlutterOverlayWindowPlugin.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this,
                 0, notificationIntent, 0);
         Notification notification = new NotificationCompat.Builder(this, OverlayConstants.CHANNEL_ID)
-                .setContentTitle("Overlay window service is running")
+                .setContentTitle("")
+                .setSmallIcon(R.drawable.notification_icon)
                 .setContentIntent(pendingIntent)
                 .build();
         startForeground(OverlayConstants.NOTIFICATION_ID, notification);
