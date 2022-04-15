@@ -1,15 +1,20 @@
 package flutter.overlay.window.flutter_overlay_window;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
+import android.app.PendingIntent;
 import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.WindowManager;
 
 import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
 
 import io.flutter.embedding.android.FlutterTextureView;
 import io.flutter.embedding.android.FlutterView;
@@ -34,6 +39,8 @@ public class OverlayService extends Service {
 
     @Override
     public void onCreate() {
+         /* createNotificationChannel();
+        displayNotification(); */
         FlutterEngine engine = FlutterEngineCache.getInstance().get("my_engine_id");
         engine.getLifecycleChannel().appIsResumed();
         flutterView = new FlutterView(getApplicationContext(), new FlutterTextureView(getApplicationContext()));
@@ -42,11 +49,12 @@ public class OverlayService extends Service {
         flutterView.setBackgroundColor(Color.TRANSPARENT);
         flutterChannel.setMethodCallHandler((call, result) -> {
             Log.d("X-S-S-S", "onCreate: Called " + call.method);
-            Log.d("WINDOW", "onCreate: " + WindowSetup.height);
             if (call.method.equals("close")) {
-                boolean closed = stopService(new Intent(getBaseContext(), OverlayService.class));
-                Log.d("CALL", "CALL: " + closed);
-                result.success(closed);
+                if (windowManager != null) {
+                    windowManager.removeView(flutterView);
+                    windowManager = null;
+                }
+                result.success(true);
             }
         });
 
@@ -56,21 +64,39 @@ public class OverlayService extends Service {
 
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 
-        int type = WindowManager.LayoutParams.TYPE_PHONE;
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O)
-            type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
-        else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-            type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
 
         WindowManager.LayoutParams params = new WindowManager.LayoutParams(
                 WindowSetup.width,
                 WindowSetup.height,
-                type,
+                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
                 WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
                 PixelFormat.TRANSLUCENT
         );
         params.gravity = WindowSetup.gravity;
         windowManager.addView(flutterView, params);
+    }
+
+    private void displayNotification() {
+        Intent notificationIntent = new Intent(this, FlutterOverlayWindowPlugin.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this,
+                0, notificationIntent, 0);
+        Notification notification = new NotificationCompat.Builder(this, OverlayConstants.CHANNEL_ID)
+                .setContentTitle("Overlay window service is running")
+                .setContentIntent(pendingIntent)
+                .build();
+        startForeground(OverlayConstants.NOTIFICATION_ID, notification);
+    }
+
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel serviceChannel = new NotificationChannel(
+                    OverlayConstants.CHANNEL_ID,
+                    "Foreground Service Channel",
+                    NotificationManager.IMPORTANCE_DEFAULT
+            );
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            assert manager != null;
+            manager.createNotificationChannel(serviceChannel);
+        }
     }
 }
