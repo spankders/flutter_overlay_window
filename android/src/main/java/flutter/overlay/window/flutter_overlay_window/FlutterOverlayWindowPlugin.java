@@ -91,6 +91,7 @@ public class FlutterOverlayWindowPlugin implements
         FlutterEngineGroup enn = new FlutterEngineGroup(context);
         DartExecutor.DartEntrypoint dEntry = new DartExecutor.DartEntrypoint(
                 FlutterInjector.instance().flutterLoader().findAppBundlePath(),
+                "package:kids_protect/main.dart",
                 "showOverlay");
         FlutterEngine engine = enn.createAndRunEngine(context, dEntry);
         FlutterEngineCache.getInstance().put("my_engine_id", engine);
@@ -99,7 +100,6 @@ public class FlutterOverlayWindowPlugin implements
 
     @Override
     public void onDetachedFromActivityForConfigChanges() {
-
     }
 
     @Override
