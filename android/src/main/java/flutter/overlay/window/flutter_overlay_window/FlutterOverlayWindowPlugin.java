@@ -73,7 +73,7 @@ public class FlutterOverlayWindowPlugin implements
             WindowSetup.width = width != null ? width : -1;
             WindowSetup.height = height != null ? height : -1;
             WindowSetup.setGravityFromAlignment(alignment != null ? alignment : "center");
-            mActivity.startService(new Intent(context, OverlayService.class));
+            context.startService(new Intent(context, OverlayService.class));
             result.success(null);
         } else {
             result.notImplemented();
