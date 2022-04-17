@@ -1,6 +1,7 @@
 package flutter.overlay.window.flutter_overlay_window;
 
 import android.graphics.PixelFormat;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.WindowManager;
 
@@ -13,17 +14,7 @@ public abstract class WindowSetup {
     static int flag = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
     static int gravity = Gravity.CENTER;
     static BasicMessageChannel messenger = null;
-    static int format = PixelFormat.TRANSPARENT;
 
-
-    static void setFormat(String type) {
-        if (type.equalsIgnoreCase("transparent")) {
-            format = PixelFormat.TRANSPARENT;
-        }
-        if (type.equalsIgnoreCase("translucent")) {
-            format = PixelFormat.TRANSLUCENT;
-        }
-    }
 
     static void setFlag(String name) {
         if (name.equalsIgnoreCase("flagNotFocusable")) {

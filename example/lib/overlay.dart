@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -32,8 +33,8 @@ class _OverlayWindowState extends State<OverlayWindow> {
               color: const Color(0xFFFFD580).withOpacity(0.45),
             ),
           ),
-          SingleChildScrollView(
-            child: Center(
+          Center(
+            child: SingleChildScrollView(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -47,7 +48,7 @@ class _OverlayWindowState extends State<OverlayWindow> {
                   ),
                   ElevatedButton(
                     onPressed: () async {
-                      await FlutterOverlayWindow.shareData("It's what it is");
+                      await FlutterOverlayWindow.shareData(true);
                     },
                     child: const Text("Send data"),
                   ),

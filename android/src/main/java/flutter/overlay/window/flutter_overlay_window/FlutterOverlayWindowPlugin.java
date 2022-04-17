@@ -70,13 +70,11 @@ public class FlutterOverlayWindowPlugin implements
             Integer width = call.argument("width");
             String alignment = call.argument("alignment").toString();
             String flag = call.argument("flag").toString();
-            String format = call.argument("format").toString();
 
             WindowSetup.width = width != null ? width : -1;
             WindowSetup.height = height != null ? height : -1;
             WindowSetup.setGravityFromAlignment(alignment != null ? alignment : "center");
             WindowSetup.setFlag(flag != null ? flag : "flagNotFocusable");
-            WindowSetup.setFormat(format != null ? format : "translucent");
             context.startService(new Intent(context, OverlayService.class));
             result.success(null);
         } else {
