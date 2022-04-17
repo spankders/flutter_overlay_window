@@ -79,8 +79,8 @@ public class OverlayService extends Service {
                 WindowSetup.width,
                 WindowSetup.height,
                 WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
-                PixelFormat.TRANSLUCENT
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                PixelFormat.TRANSPARENT
         );
         params.gravity = WindowSetup.gravity;
         windowManager.addView(flutterView, params);
