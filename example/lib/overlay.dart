@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -48,7 +47,8 @@ class _OverlayWindowState extends State<OverlayWindow> {
                   ),
                   ElevatedButton(
                     onPressed: () async {
-                      await FlutterOverlayWindow.shareData(true);
+                      await FlutterOverlayWindow.shareData(
+                          "Hello from the other side");
                     },
                     child: const Text("Send data"),
                   ),
