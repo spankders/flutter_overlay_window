@@ -9,43 +9,53 @@ public abstract class WindowSetup {
 
     static int height = WindowManager.LayoutParams.MATCH_PARENT;
     static int width = WindowManager.LayoutParams.MATCH_PARENT;
+    static int flag = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
     static int gravity = Gravity.CENTER;
     static BasicMessageChannel messenger = null;
 
 
+    static void setFlag(String name) {
+        if (name.equalsIgnoreCase("flagNotFocusable")) {
+            flag = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+        }
+        if (name.equalsIgnoreCase("flagNotTouchable")) {
+            flag = WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
+        }
+    }
+
     static void setGravityFromAlignment(String alignment) {
-        if (alignment.toLowerCase() == "topLeft".toLowerCase()) {
+        if (alignment.equalsIgnoreCase("topLeft")) {
             gravity = Gravity.TOP | Gravity.LEFT;
             return;
         }
-        if (alignment.toLowerCase() == "topCenter".toLowerCase()) {
+        if (alignment.equalsIgnoreCase("topCenter")) {
             gravity = Gravity.TOP;
         }
-        if (alignment.toLowerCase() == "topRight".toLowerCase()) {
+        if (alignment.equalsIgnoreCase("topRight")) {
             gravity = Gravity.TOP | Gravity.RIGHT;
             return;
         }
 
-        if (alignment.toLowerCase() == "centerLeft".toLowerCase()) {
+        if (alignment.equalsIgnoreCase("centerLeft")) {
             gravity = Gravity.CENTER | Gravity.LEFT;
             return;
         }
-        if (alignment.toLowerCase() == "center".toLowerCase()) {
+        if (alignment.equalsIgnoreCase("center")) {
             gravity = Gravity.CENTER;
         }
-        if (alignment.toLowerCase() == "centerRight".toLowerCase()) {
+        if (alignment.equalsIgnoreCase("centerRight")) {
             gravity = Gravity.CENTER | Gravity.RIGHT;
             return;
         }
 
-        if (alignment.toLowerCase() == "bottomLeft".toLowerCase()) {
+        if (alignment.equalsIgnoreCase("bottomLeft")) {
             gravity = Gravity.BOTTOM | Gravity.LEFT;
             return;
         }
-        if (alignment.toLowerCase() == "bottomCenter".toLowerCase()) {
+        if (alignment.equalsIgnoreCase("bottomCenter")) {
             gravity = Gravity.BOTTOM;
         }
-        if (alignment.toLowerCase() == "bottomRight".toLowerCase()) {
+        if (alignment.equalsIgnoreCase("bottomRight")) {
             gravity = Gravity.BOTTOM | Gravity.RIGHT;
             return;
         }

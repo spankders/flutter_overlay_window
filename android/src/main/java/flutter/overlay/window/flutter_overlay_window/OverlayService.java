@@ -79,7 +79,7 @@ public class OverlayService extends Service {
                 WindowSetup.width,
                 WindowSetup.height,
                 WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                WindowSetup.flag,
                 PixelFormat.TRANSPARENT
         );
         params.gravity = WindowSetup.gravity;
