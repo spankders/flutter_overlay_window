@@ -27,9 +27,9 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry;
 
-
 public class FlutterOverlayWindowPlugin implements
-        FlutterPlugin, ActivityAware, BasicMessageChannel.MessageHandler, MethodCallHandler, PluginRegistry.ActivityResultListener {
+        FlutterPlugin, ActivityAware, BasicMessageChannel.MessageHandler, MethodCallHandler,
+        PluginRegistry.ActivityResultListener {
 
     private MethodChannel channel;
     private Context context;
@@ -38,14 +38,14 @@ public class FlutterOverlayWindowPlugin implements
     private Result pendingResult;
     final int REQUEST_CODE_FOR_OVERLAY_PERMISSION = 1248;
 
-
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
         this.context = flutterPluginBinding.getApplicationContext();
         channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), OverlayConstants.CHANNEL_TAG);
         channel.setMethodCallHandler(this);
 
-        messenger = new BasicMessageChannel(flutterPluginBinding.getBinaryMessenger(), OverlayConstants.MESSENGER_TAG, JSONMessageCodec.INSTANCE);
+        messenger = new BasicMessageChannel(flutterPluginBinding.getBinaryMessenger(), OverlayConstants.MESSENGER_TAG,
+                JSONMessageCodec.INSTANCE);
         messenger.setMessageHandler(this);
 
         WindowSetup.messenger = messenger;
@@ -93,7 +93,6 @@ public class FlutterOverlayWindowPlugin implements
         FlutterEngineGroup enn = new FlutterEngineGroup(context);
         DartExecutor.DartEntrypoint dEntry = new DartExecutor.DartEntrypoint(
                 FlutterInjector.instance().flutterLoader().findAppBundlePath(),
-                "package:kids_protect/main.dart",
                 "showOverlay");
         FlutterEngine engine = enn.createAndRunEngine(context, dEntry);
         FlutterEngineCache.getInstance().put("my_engine_id", engine);
@@ -116,8 +115,10 @@ public class FlutterOverlayWindowPlugin implements
     @Override
     public void onMessage(@Nullable Object message, @NonNull BasicMessageChannel.Reply reply) {
         Log.d("MSG", "onMessage: " + message);
-        BasicMessageChannel overlayMessageChannel = new BasicMessageChannel(FlutterEngineCache.getInstance().get("my_engine_id")
-                .getDartExecutor(), OverlayConstants.MESSENGER_TAG, JSONMessageCodec.INSTANCE);
+        BasicMessageChannel overlayMessageChannel = new BasicMessageChannel(
+                FlutterEngineCache.getInstance().get("my_engine_id")
+                        .getDartExecutor(),
+                OverlayConstants.MESSENGER_TAG, JSONMessageCodec.INSTANCE);
         overlayMessageChannel.send(message, reply);
     }
 
