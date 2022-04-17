@@ -30,6 +30,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
           title: const Text('Plugin example app'),
@@ -57,9 +58,7 @@ class _MyAppState extends State<MyApp> {
               const SizedBox(height: 10.0),
               TextButton(
                 onPressed: () async {
-                  await FlutterOverlayWindow.showOverlay(
-                    flag: OverlayFlag.flagNotTouchable,
-                  );
+                  await FlutterOverlayWindow.showOverlay();
                 },
                 child: const Text("Show Overlay"),
               ),

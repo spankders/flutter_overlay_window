@@ -20,12 +20,14 @@ class FlutterOverlayWindow {
     int width = -1,
     OverlayAlignment alignment = OverlayAlignment.center,
     OverlayFlag flag = OverlayFlag.flagNotFocusable,
+    Format format = Format.translucent,
   }) async {
     await _channel.invokeMethod('showOverlay', {
       "height": height,
       "width": width,
       "alignment": alignment.name,
       "flag": flag.name,
+      "format": format.name,
     });
   }
 
@@ -95,4 +97,13 @@ enum OverlayFlag {
 
   /// Window flag: this window won't ever get key input focus, so the user can not send key or other button events to it
   flagNotFocusable
+}
+
+enum Format {
+  /// System chooses a format that supports transparency (at least 1 alpha bit)
+  /// usefull if you want to use a widget with transparent background
+  transparent,
+
+  ///System chooses a format that supports translucency (many alpha bits)
+  translucent,
 }

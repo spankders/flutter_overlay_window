@@ -61,6 +61,8 @@ public class OverlayService extends Service {
         flutterView = new FlutterView(getApplicationContext(), new FlutterTextureView(getApplicationContext()));
         flutterView.attachToFlutterEngine(FlutterEngineCache.getInstance().get("my_engine_id"));
         flutterView.setFitsSystemWindows(true);
+        flutterView.setFocusable(true);
+        flutterView.setFocusableInTouchMode(true);
         flutterView.setBackgroundColor(Color.TRANSPARENT);
         flutterChannel.setMethodCallHandler((call, result) -> {
             if (call.method.equals("close")) {
@@ -68,19 +70,16 @@ public class OverlayService extends Service {
                 result.success(true);
             }
         });
-
         overlayMessageChannel.setMessageHandler((message, reply) -> {
             WindowSetup.messenger.send(message);
         });
-
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
-
         WindowManager.LayoutParams params = new WindowManager.LayoutParams(
                 WindowSetup.width,
                 WindowSetup.height,
                 WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
                 WindowSetup.flag,
-                PixelFormat.TRANSPARENT
+                WindowSetup.format
         );
         params.gravity = WindowSetup.gravity;
         windowManager.addView(flutterView, params);
