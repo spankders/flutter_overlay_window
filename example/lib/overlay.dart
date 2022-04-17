@@ -45,7 +45,8 @@ class _OverlayWindowState extends State<OverlayWindow> {
                     await FlutterOverlayWindow.shareData("It's what it is");
                   },
                   child: const Text("Send data"),
-                )
+                ),
+                const TextField(),
               ],
             ),
           ),
